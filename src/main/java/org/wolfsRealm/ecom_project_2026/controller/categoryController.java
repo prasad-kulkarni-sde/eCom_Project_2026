@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.wolfsRealm.ecom_project_2026.config.AppConstants;
-import org.wolfsRealm.ecom_project_2026.model.category;
+import org.wolfsRealm.ecom_project_2026.model.Category;
 import org.wolfsRealm.ecom_project_2026.payload.CategoryDTO;
 import org.wolfsRealm.ecom_project_2026.payload.CategoryResponse;
 import org.wolfsRealm.ecom_project_2026.service.categoryService;
@@ -45,16 +45,14 @@ public class categoryController {
         return new ResponseEntity<>(categoryService.createCategory(categoryDTO),HttpStatus.CREATED);
     }
 
-    @DeleteMapping("api/admin/categories/{id}")
-    public ResponseEntity<CategoryDTO> deleteCategory(@PathVariable Long id){
-        return ResponseEntity.ok(categoryService.deleteCategory(id));
+    @DeleteMapping("api/admin/categories/{categoryId}")
+    public ResponseEntity<CategoryDTO> deleteCategory(@PathVariable Long categoryId){
+        return ResponseEntity.ok(categoryService.deleteCategory(categoryId));
     }
     
-    @PutMapping("api/admin/categories/{id}")
-    public ResponseEntity<CategoryDTO> updateCategory(@Valid @RequestBody CategoryDTO categoryDTO, @PathVariable Long id){
-        return ResponseEntity.ok(categoryService.updateCategory(categoryDTO,id));
-
-
+    @PutMapping("api/admin/categories/{categoryId}")
+    public ResponseEntity<CategoryDTO> updateCategory(@Valid @RequestBody CategoryDTO categoryDTO, @PathVariable Long categoryId){
+        return ResponseEntity.ok(categoryService.updateCategory(categoryDTO,categoryId));
 
     }
 }

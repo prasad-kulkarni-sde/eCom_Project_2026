@@ -9,7 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.wolfsRealm.ecom_project_2026.exceptions.APIException;
 import org.wolfsRealm.ecom_project_2026.exceptions.ResourceNotFoundException;
-import org.wolfsRealm.ecom_project_2026.model.category;
+import org.wolfsRealm.ecom_project_2026.model.Category;
 import org.wolfsRealm.ecom_project_2026.payload.CategoryDTO;
 import org.wolfsRealm.ecom_project_2026.payload.CategoryResponse;
 import org.wolfsRealm.ecom_project_2026.repositories.CategoryRepository;
@@ -34,9 +34,9 @@ public class categoryServiceImplementation implements categoryService{
         Sort sortByAndOrder= sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
         Pageable pageDetails = PageRequest.of(pageNumber,pageSize,sortByAndOrder);
-        Page<category> categoryPage= categoryRepository.findAll(pageDetails);
+        Page<Category> categoryPage= categoryRepository.findAll(pageDetails);
 
-        List<category>categories=categoryPage.getContent();
+        List<Category>categories=categoryPage.getContent();
 
         if (categories.isEmpty())throw new APIException("No Category Found!!!");
         List<CategoryDTO> categoryDTOS= categories.stream().map
@@ -55,13 +55,13 @@ public class categoryServiceImplementation implements categoryService{
 
     @Override
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
-        category category= modelMapper.map(categoryDTO,category.class);
+        Category category= modelMapper.map(categoryDTO,Category.class);
 
-        category savedCategory1= categoryRepository.findByCategoryName(category.getCategoryName());
+        Category savedCategory1= categoryRepository.findByCategoryName(category.getCategoryName());
 
         if(savedCategory1!=null) throw new APIException("Category with name "+category.getCategoryName()+" already exists !!!");
 
-        category savedCategory= categoryRepository.save(category);
+        Category savedCategory= categoryRepository.save(category);
 
         return modelMapper.map(savedCategory,CategoryDTO.class);
 
@@ -69,28 +69,27 @@ public class categoryServiceImplementation implements categoryService{
     }
 
     @Override
-    public CategoryDTO deleteCategory(Long  id) {
+    public CategoryDTO deleteCategory(Long  categoryId) {
 
-         category category= categoryRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("Category","Category Id",id));
+         Category category= categoryRepository.findById(categoryId)
+                .orElseThrow(()->new ResourceNotFoundException("Category","Category Id",categoryId));
          modelMapper.map(category,CategoryDTO.class);
          categoryRepository.delete(category);
         return modelMapper.map(category,CategoryDTO.class);
     }
 
     @Override
-    public CategoryDTO updateCategory(CategoryDTO categoryDTO,Long id) {
+    public CategoryDTO updateCategory(CategoryDTO categoryDTO,Long categoryId) {
 
 
 
+        Category category= modelMapper.map(categoryDTO, org.wolfsRealm.ecom_project_2026.model.Category.class);
+        Category savedCategory1= categoryRepository.findById(categoryId).orElseThrow(()->new ResourceNotFoundException("Category","Category Id",categoryId));
 
-        category category= modelMapper.map(categoryDTO, org.wolfsRealm.ecom_project_2026.model.category.class);
-        category savedCategory1= categoryRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Category","Category Id",id));
-
-        category savedCategory= categoryRepository.findByCategoryName(category.getCategoryName());
+        Category savedCategory= categoryRepository.findByCategoryName(category.getCategoryName());
         if (savedCategory!=null)throw new APIException("Category with name "+category.getCategoryName()+" already exists !!!");
 
-        category.setId(id);
+        category.setCategoryId(categoryId);
         savedCategory1= categoryRepository.save(category);
         return  modelMapper.map(savedCategory1,CategoryDTO.class);
 
