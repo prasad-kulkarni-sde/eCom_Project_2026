@@ -7,20 +7,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.wolfsRealm.ecom_project_2026.config.AppConstants;
-import org.wolfsRealm.ecom_project_2026.model.Category;
 import org.wolfsRealm.ecom_project_2026.payload.CategoryDTO;
 import org.wolfsRealm.ecom_project_2026.payload.CategoryResponse;
-import org.wolfsRealm.ecom_project_2026.service.categoryService;
+import org.wolfsRealm.ecom_project_2026.service.CategoryService;
 
 
 @RestController
 
-public class categoryController {
+public class CategoryController {
+
+
+    private final CategoryService categoryService;
 
     @Autowired
-    private categoryService categoryService;
-
-    public categoryController(categoryService categoryService) {
+    public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 

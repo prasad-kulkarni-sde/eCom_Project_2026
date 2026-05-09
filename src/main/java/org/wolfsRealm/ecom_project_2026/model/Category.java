@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity(name="Categories")
 @Data
 @NoArgsConstructor
@@ -18,9 +20,12 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
 
-    @NotBlank(message = "Category Name should Not be left blank !!!")
-    @Size(min = 5, message = "Category Name should consist at least 5 Characters !!!")
+    @Column(unique = true)
     private String categoryName;
+
+    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL)
+    private List<Product> products;
+
 
 
 

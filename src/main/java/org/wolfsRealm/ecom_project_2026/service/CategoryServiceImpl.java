@@ -18,7 +18,7 @@ import java.util.*;
 
 @Service
 
-public class categoryServiceImplementation implements categoryService{
+public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     CategoryRepository categoryRepository;
