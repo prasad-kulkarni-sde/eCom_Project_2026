@@ -17,7 +17,6 @@ import org.wolfsRealm.ecom_project_2026.model.Category;
 import org.wolfsRealm.ecom_project_2026.model.Product;
 
 
-import org.wolfsRealm.ecom_project_2026.payload.CategoryResponse;
 import org.wolfsRealm.ecom_project_2026.payload.ProductDTO;
 import org.wolfsRealm.ecom_project_2026.payload.ProductResponse;
 import org.wolfsRealm.ecom_project_2026.repositories.CategoryRepository;
@@ -57,7 +56,7 @@ class ProductServiceImpl implements ProductService {
 
 
         ProductResponse productResponse= new ProductResponse();
-        List<Product> products= productRepository.findAll();
+        List<Product> products= productPage.getContent();
         if (products.isEmpty())throw new ResourceNotFoundException("Product");
 
 
@@ -82,9 +81,9 @@ class ProductServiceImpl implements ProductService {
         Sort sortByAndOrder= sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
         Pageable pageDetails = PageRequest.of(pageNumber,pageSize,sortByAndOrder);
-        Page<Product> productPage= productRepository.findAll(pageDetails);
+        Page<Product> productPage = productRepository.findByCategoryOrderByProductId(category, pageDetails);
 
-        List<Product>list= productRepository.findByCategoryCategoryId(categoryId);
+        List<Product> list= productPage.getContent();
         if (list.isEmpty())throw new ResourceNotFoundException("Product","categoryId",categoryId);
 
         ProductResponse productResponse= new ProductResponse();
@@ -103,17 +102,25 @@ class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse getProductByKeyword(String keyword,Integer pageNumber,Integer pageSize,String sortBy, String sortOrder) {
-        List<Product>products= productRepository.findByProductNameLikeIgnoreCase('%'+keyword+'%');
-        if (products.isEmpty())throw new ResourceNotFoundException("Product","keyword",keyword);
+
+
 
         Sort sortByAndOrder= sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
         Pageable pageDetails = PageRequest.of(pageNumber,pageSize,sortByAndOrder);
-        Page<Product> productPage= productRepository.findAll(pageDetails);
+        Page<Product> productPage = productRepository
+                .findByProductNameLikeIgnoreCase('%' + keyword + '%', pageDetails);
 
-        ProductResponse productResponse= new ProductResponse();
+        List<Product>products= productPage.getContent();
+
+        if (products.isEmpty())throw new ResourceNotFoundException("Product","keyword",keyword);
+
+
+
         List<ProductDTO>productDTOS= products.stream().map
                 (product -> modelMapper.map(product, ProductDTO.class)).toList();
+
+        ProductResponse productResponse= new ProductResponse();
 
         productResponse.setContent(productDTOS);
         productResponse.setPageNumber(productPage.getNumber());

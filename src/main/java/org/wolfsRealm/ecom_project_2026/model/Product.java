@@ -7,12 +7,15 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.UniqueElements;
+import lombok.ToString;
+
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "products")
+
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,5 +34,9 @@ public class Product {
     @ManyToOne
     @JoinColumn(name="categoryId")
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name="seller_id")
+    private User user;
 
 }
