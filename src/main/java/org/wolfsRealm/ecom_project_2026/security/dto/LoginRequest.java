@@ -1,4 +1,4 @@
-package org.wolfsRealm.ecom_project_2026.security.jwt;
+package org.wolfsRealm.ecom_project_2026.security.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
