@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -60,5 +61,6 @@ public class User {
     private List<Address>addresses= new ArrayList<>();
 
 
-
+    public User(@NotBlank @Size(min=3,max=20, message = "Username must at least contain 3 and at most 20 characters ") String username, @NotBlank @Size(max=50,message = "Email ID must at most contain 50 characters") @Email String email, @Nullable String encode) {
+    }
 }

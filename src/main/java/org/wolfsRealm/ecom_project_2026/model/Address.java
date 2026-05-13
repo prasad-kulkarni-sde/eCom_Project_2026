@@ -1,6 +1,7 @@
 package org.wolfsRealm.ecom_project_2026.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -43,9 +44,9 @@ public class Address {
     @Size(min = 3, message = "country name must consist of at least 3 characters")
     private String country;
 
-    @NotNull
-    @Size(min = 6, message = "pin code must consist of at least 6 characters")
-    private Integer pincode;
+    @NotBlank
+    @Size(min = 6, max = 6, message = "Pincode must be exactly 6 characters")
+    private String pincode;
 
     @ToString.Exclude
     @ManyToMany(mappedBy = "addresses")

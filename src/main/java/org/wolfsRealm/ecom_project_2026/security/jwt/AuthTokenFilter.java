@@ -9,11 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.wolfsRealm.ecom_project_2026.security.services.UserDetailsImpl;
+import org.wolfsRealm.ecom_project_2026.security.services.UserDetailsServicesImpl;
 
 import java.io.IOException;
 
@@ -24,7 +25,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private JwtUtils jwtUtils;
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailsServicesImpl userDetailsService;
 
     private static final Logger logger= LoggerFactory.getLogger(AuthTokenFilter.class);
     @Override
@@ -37,7 +38,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             logger.debug("AuthTokenFilter.java: {}",jwt);
             if (jwt!=null && jwtUtils.validateJwtToken(jwt)){
                 String username= jwtUtils.getUsernameFromJTWToken(jwt);
-                UserDetails userDetails= userDetailsService.loadUserByUsername(username);
+                UserDetailsImpl userDetails= (UserDetailsImpl) userDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authentication=
                         new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
                 authentication.setDetails(

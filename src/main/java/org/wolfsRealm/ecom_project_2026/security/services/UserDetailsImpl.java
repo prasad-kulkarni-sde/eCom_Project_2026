@@ -8,7 +8,6 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 import org.wolfsRealm.ecom_project_2026.model.User;
 
 import java.util.Collection;
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 
-@Service
 public class UserDetailsImpl implements UserDetails {
 
     private static final long serialVersionUID= 1L;
