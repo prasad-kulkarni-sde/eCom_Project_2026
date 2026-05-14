@@ -3,7 +3,9 @@ package org.wolfsRealm.ecom_project_2026.controller;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,10 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.wolfsRealm.ecom_project_2026.model.AppRole;
 import org.wolfsRealm.ecom_project_2026.model.Role;
 import org.wolfsRealm.ecom_project_2026.model.User;
@@ -67,11 +66,21 @@ public class AuthController {
 
         //SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsImpl userDetailsImpl= (UserDetailsImpl) authentication.getPrincipal();
-        String jwtToken= jwtUtils.generateTokenFromUsername(userDetailsImpl);
+
+        ResponseCookie jwtCookie= jwtUtils.generateJwtCookie(userDetailsImpl);
+
+        //    String jwtToken= jwtUtils.generateTokenFromUsername(String.valueOf(userDetailsImpl));
+
         List<String> roles= userDetailsImpl.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 
-        LoginResponse loginResponse= new LoginResponse(userDetailsImpl.getId(), userDetailsImpl.getUsername(),jwtToken,roles);
-        return  ResponseEntity.ok(loginResponse);
+        LoginResponse loginResponse= new LoginResponse(
+                userDetailsImpl.getId(), userDetailsImpl.getUsername(),roles);
+
+        //   LoginResponse loginResponse= new LoginResponse(
+        //                userDetailsImpl.getId(), userDetailsImpl.getUsername(),/*jwtToken*/jwtCookie.toString(),roles);
+
+        return  ResponseEntity.ok().header(
+                HttpHeaders.SET_COOKIE, jwtCookie.toString()).body(loginResponse);
     }
 
     @PostMapping("/signup")
@@ -113,6 +122,31 @@ public class AuthController {
         user.setRoles(roles);
         userRepository.save(user);
         return new ResponseEntity<>(new MessageResponse("User Registered Successfully !!"),HttpStatus.ACCEPTED);
+
+    }
+
+    @GetMapping("/username")
+    public String getUserName(Authentication authentication){
+        if (authentication!=null) return authentication.getName();
+        else return "Null";
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<LoginResponse> getUserDetails(Authentication authentication){
+        UserDetailsImpl userDetails= (UserDetailsImpl) authentication.getPrincipal();
+        List<String> roles= userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+
+        LoginResponse loginResponse= new LoginResponse(
+                userDetails.getId(), userDetails.getUsername(),roles);
+
+        return new ResponseEntity<>(loginResponse,HttpStatus.OK);
+    }
+
+    @PostMapping("/signout")
+    public ResponseEntity<?> signOut(){
+        ResponseCookie cookie= jwtUtils.getCleanJwtCookie();
+        return  ResponseEntity.ok().header(
+                HttpHeaders.SET_COOKIE, cookie.toString()).body(new MessageResponse("You've been Signed Out Successfully !!!"));
 
     }
 }

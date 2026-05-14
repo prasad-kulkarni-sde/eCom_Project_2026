@@ -13,7 +13,7 @@ public class LoginResponse {
 
     public Long Id;
     public String username;
-    public String jwtToken;
     public List<String> roles;
+//    public String JwtToken;
 
 }

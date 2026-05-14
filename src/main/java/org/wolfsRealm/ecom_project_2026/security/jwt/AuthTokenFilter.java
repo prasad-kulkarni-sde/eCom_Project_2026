@@ -34,10 +34,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         logger.debug("AuthTokenFilter called for URI: {}",request.getRequestURI());
 
         try{
-            String jwt= jwtUtils.getJwtFromHeader(request);
+            String jwt= jwtUtils.getJwtFromCookie(request);        /// String jwt= jwtUtils.getJwtFromHeader(request);
             logger.debug("AuthTokenFilter.java: {}",jwt);
             if (jwt!=null && jwtUtils.validateJwtToken(jwt)){
-                String username= jwtUtils.getUsernameFromJTWToken(jwt);
+                String username= jwtUtils.getUsernameFromJWTToken(jwt);
                 UserDetailsImpl userDetails= (UserDetailsImpl) userDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authentication=
                         new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());

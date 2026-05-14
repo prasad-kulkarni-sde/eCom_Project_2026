@@ -22,7 +22,7 @@ public class SignupRequest {
     @NotBlank
     @Size(max=50,message = "Email ID must at most contain 50 characters")
     @Email
-    private String Email;
+    private String email;
 
     @NotBlank
     @Size(min=8,message = "Password must at least contain 8 characters")

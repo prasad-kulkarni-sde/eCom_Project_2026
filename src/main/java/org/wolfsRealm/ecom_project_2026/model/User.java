@@ -34,15 +34,15 @@ public class User {
     @NotBlank
     @Size(max=50)
     @Email
-    @Column(name= "Email", unique = true)
-    private String Email;
+    @Column(name= "email", unique = true)
+    private String email;
 
     @NotBlank
     @Size(max=120)
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST},fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.MERGE},fetch = FetchType.EAGER)
     @JoinTable(
         name="user_role",
             joinColumns = @JoinColumn(name="user_id"),
@@ -61,6 +61,9 @@ public class User {
     private List<Address>addresses= new ArrayList<>();
 
 
-    public User(@NotBlank @Size(min=3,max=20, message = "Username must at least contain 3 and at most 20 characters ") String username, @NotBlank @Size(max=50,message = "Email ID must at most contain 50 characters") @Email String email, @Nullable String encode) {
+    public User(@NotBlank @Size(min=3,max=20, message = "Username must at least contain 3 and at most 20 characters ") String username, @NotBlank @Size(max=50,message = "Email ID must at most contain 50 characters") @Email String email, @Nullable String password) {
+        this.userName=username;
+        this.email=email;
+        this.password=password;
     }
 }
