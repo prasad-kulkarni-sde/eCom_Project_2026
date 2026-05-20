@@ -20,7 +20,7 @@ public class ProductDTO {
     @NotBlank(message = "Product Description should Not be left blank !!!")
     @Size(min = 6, message = "Product Description should consist at least 6 Characters !!!")
     private String description;
-    private Long quantity;
+    private Integer quantity;
     private Double price;
     private Double specialPrice;
     private Double discount;

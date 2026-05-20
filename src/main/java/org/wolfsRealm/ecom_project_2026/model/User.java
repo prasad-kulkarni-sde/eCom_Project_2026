@@ -66,4 +66,8 @@ public class User {
         this.email=email;
         this.password=password;
     }
+
+    @ToString.Exclude
+    @OneToOne(mappedBy = "user",cascade = {CascadeType.MERGE,CascadeType.PERSIST},orphanRemoval = true)
+    private Cart cart;
 }

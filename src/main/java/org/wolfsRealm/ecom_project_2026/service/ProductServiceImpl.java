@@ -57,7 +57,7 @@ class ProductServiceImpl implements ProductService {
 
         ProductResponse productResponse= new ProductResponse();
         List<Product> products= productPage.getContent();
-        if (products.isEmpty())throw new ResourceNotFoundException("Product");
+        if (products.isEmpty())throw new ResourceNotFoundException("Products Not Found!!");
 
 
         List<ProductDTO>productDTOS= products.stream().map
