@@ -56,8 +56,8 @@ public class User {
                orphanRemoval = true)
     private Set<Product>products;
 
-    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST},fetch = FetchType.LAZY)
-    @JoinTable(name = "user_address",joinColumns = @JoinColumn(name = "user_id"),inverseJoinColumns = @JoinColumn(name = "address_id"))
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE,CascadeType.PERSIST},fetch = FetchType.LAZY,orphanRemoval = true)
+
     private List<Address>addresses= new ArrayList<>();
 
 

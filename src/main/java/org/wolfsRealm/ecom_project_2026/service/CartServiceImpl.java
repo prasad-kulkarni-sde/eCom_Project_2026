@@ -25,7 +25,6 @@ import org.wolfsRealm.ecom_project_2026.util.AuthUtil;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class CartServiceImpl implements CartService{
@@ -146,7 +145,7 @@ public class CartServiceImpl implements CartService{
 
     @Override
     @Transactional
-    public CartDTO updateCartProduct(Long productId, int delete) {
+    public CartDTO updateCartProductQuantity(Long productId, int delete) {
         Cart userCart= cartRepository.findCartByEmail(authUtil.loggedInEmail());
 
         if (userCart==null)throw new ResourceNotFoundException("Cart Does Not Exists!!");
@@ -209,6 +208,24 @@ public class CartServiceImpl implements CartService{
         cartItemRepository.deleteCartItemByProductIdAndCartId(productId,cartId);
 
         return "Product "+cartItem.getProduct().getProductName()+" Deleted Successfully From The Cart!!";
+    }
+
+    @Override
+    public void updateProductsInCarts(Long cartId, Long productId) {
+        Product product= productRepository.findById(productId).orElseThrow(()->new ResourceNotFoundException("productId","Product",productId));
+
+         Cart cart= cartRepository.findById(cartId).orElseThrow(()-> new ResourceNotFoundException("Cart","cartId",cartId));
+
+        CartItem cartItem= cartItemRepository.findCartItemByProductIdAndCartId(productId, cartId);
+        if (cartItem==null)throw new APIException("Product "+product.getProductName()+" not available");
+
+        double cartPrice= cart.getTotalPrice()-(cartItem.getProductPrice()*cartItem.getQuantity());
+
+        cartItem.setProductPrice(product.getSpecialPrice());
+
+        cart.setTotalPrice(cartPrice+cartItem.getProductPrice()*cartItem.getQuantity());
+
+        cartItem= cartItemRepository.save(cartItem);
     }
 
 

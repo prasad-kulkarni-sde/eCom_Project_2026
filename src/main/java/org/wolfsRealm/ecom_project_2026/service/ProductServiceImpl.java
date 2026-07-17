@@ -13,12 +13,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.wolfsRealm.ecom_project_2026.exceptions.APIException;
 import org.wolfsRealm.ecom_project_2026.exceptions.ResourceNotFoundException;
+import org.wolfsRealm.ecom_project_2026.model.Cart;
 import org.wolfsRealm.ecom_project_2026.model.Category;
 import org.wolfsRealm.ecom_project_2026.model.Product;
 
 
+import org.wolfsRealm.ecom_project_2026.payload.CartDTO;
 import org.wolfsRealm.ecom_project_2026.payload.ProductDTO;
 import org.wolfsRealm.ecom_project_2026.payload.ProductResponse;
+import org.wolfsRealm.ecom_project_2026.repositories.CartRepository;
 import org.wolfsRealm.ecom_project_2026.repositories.CategoryRepository;
 import org.wolfsRealm.ecom_project_2026.repositories.ProductRepository;
 
@@ -33,6 +36,12 @@ class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private CartRepository cartRepository;
+
+    @Autowired
+    CartService cartService;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -173,7 +182,20 @@ class ProductServiceImpl implements ProductService {
         currentProduct.setSpecialPrice(currentProduct.getPrice() - ((currentProduct.getDiscount() * 0.01) * currentProduct.getPrice()));
 
 
+
+
         productRepository.save(currentProduct);
+        List<Cart>carts= cartRepository.findCartsByProductId(productId);
+
+        List<CartDTO> cartDTOS= carts.stream().map(cart -> {
+            CartDTO cartDTO= modelMapper.map(cart,CartDTO.class);
+            List<ProductDTO> products= cart.getCartItems().stream()
+                    .map(p-> modelMapper.map(p.getProduct(),ProductDTO.class)).toList();
+            cartDTO.setProducts(products);
+            return cartDTO;
+        }).toList();
+
+        cartDTOS.forEach(cart->cartService.updateProductsInCarts(cart.getCartId(),productId));
         return modelMapper.map(currentProduct,ProductDTO.class);
     }
 
@@ -195,6 +217,9 @@ class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO deleteProduct(Long productId) {
         Product currentProduct= productRepository.findById(productId).orElseThrow(()->new ResourceNotFoundException("Product","productId",productId));
+
+        List<Cart>carts= cartRepository.findCartsByProductId(productId);
+        carts.forEach(cart -> cartService.deleteProductFromCart(cart.getCartId(),productId));
 
         productRepository.delete(currentProduct);
         return modelMapper.map(currentProduct,ProductDTO.class);

@@ -1,5 +1,6 @@
 package org.wolfsRealm.ecom_project_2026.service;
 
+import jakarta.transaction.Transactional;
 import org.wolfsRealm.ecom_project_2026.payload.CartDTO;
 import org.wolfsRealm.ecom_project_2026.payload.CartResponse;
 
@@ -10,7 +11,10 @@ public interface CartService {
 
     CartDTO getCartByEmailAndCartId(String email, Long cartId);
 
-    CartDTO updateCartProduct(Long productId, int delete);
+    @Transactional
+    CartDTO updateCartProductQuantity(Long productId, int delete);
 
     String deleteProductFromCart(Long cartId, Long productId);
+
+    void updateProductsInCarts(Long cartId, Long productId);
 }
