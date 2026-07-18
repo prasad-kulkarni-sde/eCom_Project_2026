@@ -52,4 +52,7 @@ public class Address {
     @ManyToOne()
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "address",cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+    List<Order>orderList= new ArrayList<>();
 }
