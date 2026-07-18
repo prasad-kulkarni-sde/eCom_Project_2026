@@ -7,9 +7,7 @@ import org.springframework.stereotype.Service;
 import org.wolfsRealm.ecom_project_2026.exceptions.APIException;
 import org.wolfsRealm.ecom_project_2026.exceptions.ResourceNotFoundException;
 import org.wolfsRealm.ecom_project_2026.model.*;
-import org.wolfsRealm.ecom_project_2026.payload.OrderDTO;
-import org.wolfsRealm.ecom_project_2026.payload.OrderItemDTO;
-import org.wolfsRealm.ecom_project_2026.payload.OrderRequestDTO;
+import org.wolfsRealm.ecom_project_2026.payload.*;
 import org.wolfsRealm.ecom_project_2026.repositories.*;
 
 import java.time.LocalDate;
@@ -96,11 +94,13 @@ public class OrderServiceImpl implements OrderService{
 
         OrderDTO orderDTO= modelMapper.map(order,OrderDTO.class);
         List<OrderItemDTO>OrderItemDTOList= new ArrayList<>();
-        orderItemList.forEach(item->
-                OrderItemDTOList.add(
-                        modelMapper.map(item, OrderItemDTO.class)
-                ));
+        orderItemList.forEach(item -> {
+            OrderItemDTO itemDTO = modelMapper.map(item, OrderItemDTO.class);
+            itemDTO.setProductDTO(modelMapper.map(item.getProduct(), ProductDTO.class)); // <-- add this
+            OrderItemDTOList.add(itemDTO);
+        });
         orderDTO.setOrderItems(OrderItemDTOList);
+        orderDTO.setPaymentDTO(modelMapper.map(payment, PaymentDTO.class));  // <-- add this
         orderDTO.setAddressId(addressId);
 
         return orderDTO;
