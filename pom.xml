@@ -65,30 +65,23 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- H2 -->
-<!--        <dependency>-->
-<!--            <groupId>com.h2database</groupId>-->
-<!--            <artifactId>h2</artifactId>-->
-<!--            <scope>runtime</scope>-->
-<!--        </dependency>-->
-        <!-- H2 Console — explicit module required in Spring Boot 4 -->
-
-<!--        <dependency>-->
-<!--            <groupId>com.mysql</groupId>-->
-<!--            <artifactId>mysql-connector-j</artifactId>-->
-<!--            <scope>runtime</scope>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-h2console</artifactId>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>3.0.3</version>
         </dependency>
+
+
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-h2console</artifactId>-->
+<!--        </dependency>-->
 
         <!-- Lombok -->
         <dependency>
@@ -119,7 +112,7 @@
         <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webmvc-test</artifactId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
