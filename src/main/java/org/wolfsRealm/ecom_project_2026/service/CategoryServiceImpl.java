@@ -84,7 +84,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 
         Category category= modelMapper.map(categoryDTO, org.wolfsRealm.ecom_project_2026.model.Category.class);
-        Category savedCategory1= categoryRepository.findById(categoryId).orElseThrow(()->new ResourceNotFoundException("Category","Category Id",categoryId));
+        Category savedCategory1;
 
         Category savedCategory= categoryRepository.findByCategoryName(category.getCategoryName());
         if (savedCategory!=null)throw new APIException("Category with name "+category.getCategoryName()+" already exists !!!");
